@@ -12,14 +12,14 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 10
-          run_install: false
+          runinstall: false
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
       - name: build the code
-        run: |
+        run:
           pnpm install --no-frozen-lockfile
           pnpm build
       - name: copy file to server
@@ -31,3 +31,20 @@ jobs:
           source: "./dist/*"
           target: "/var/www/html"
           strip_components: 1
+      - name: set the ubuntu user as the owner of the /var/www/html directory for ubuntu 24
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.SSH_USER_NAME}}
+          key: ${{secrets.SSH_KEY}}
+          script:
+            sudo chown -R ubuntu /var/www/html
+      - name: set the root user back as the owner of the /var/www/html directory for ubuntu 24
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.SSH_USER_NAME}}
+          key: ${{secrets.SSH_KEY}}
+          script:
+            sudo chown -R root /var/www/html
+
