@@ -2,7 +2,7 @@ name: deploy vue
 on:
   push:
     branches:
-      - prod
+      - master
 jobs:
   deploy-app:
     runs-on: ubuntu-latest
